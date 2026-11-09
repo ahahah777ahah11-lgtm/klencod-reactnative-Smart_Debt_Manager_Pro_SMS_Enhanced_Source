@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>مدير الديون الذكي برو SMS - Smart Debt Manager Pro SMS</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <div id="app-root">
+    
+    <!-- Top App Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="header-logo">⚖️</div>
+        <div class="header-title-box">
+          <h1 id="app-header-title">مدير الديون الذكي برو SMS</h1>
+          <span>Smart Debt Manager Pro SMS</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" onclick="App.navigateTo('assistant')" title="المساعد الذكي">🧠</button>
+        <button class="icon-btn" onclick="App.openAddCustomerModal()" title="إضافة عميل سريع">+👤</button>
+      </div>
+    </header>
+
+    <!-- Sub Navigation Tabs (Scrollable Quick Sections) -->
+    <nav class="sub-nav-tabs no-print">
+      <button class="tab-chip active" data-screen="dashboard" onclick="App.navigateTo('dashboard')">🏠 الرئيسية</button>
+      <button class="tab-chip" data-screen="customers" onclick="App.navigateTo('customers')">👥 العملاء</button>
+      <button class="tab-chip" data-screen="transactions" onclick="App.navigateTo('transactions')">💳 العمليات المالية</button>
+      <button class="tab-chip" data-screen="remittances" onclick="App.navigateTo('remittances')">📨 الحوالات الواردة</button>
+      <button class="tab-chip" data-screen="sms_management" onclick="App.navigateTo('sms_management')">💬 إدارة SMS</button>
+      <button class="tab-chip" data-screen="sms_templates" onclick="App.navigateTo('sms_templates')">📝 قوالب الرسائل</button>
+      <button class="tab-chip" data-screen="sms_logs" onclick="App.navigateTo('sms_logs')">📜 سجل الرسائل</button>
+      <button class="tab-chip" data-screen="reports" onclick="App.navigateTo('reports')">📊 التقارير المالية</button>
+      <button class="tab-chip" data-screen="backup_restore" onclick="App.navigateTo('backup_restore')">💾 النسخ الاحتياطي</button>
+      <button class="tab-chip" data-screen="import_csv" onclick="App.navigateTo('import_csv')">📥 استيراد (Excel/DB/PDF)</button>
+      <button class="tab-chip" data-screen="assistant" onclick="App.navigateTo('assistant')">🧠 المساعد الذكي</button>
+      <button class="tab-chip" data-screen="settings" onclick="App.navigateTo('settings')">⚙️ الإعدادات</button>
+      <button class="tab-chip" data-screen="about" onclick="App.navigateTo('about')">🧪 فحص النظام</button>
+    </nav>
+
+    <!-- Main Content Views Container -->
+    <main class="main-content">
+
+      <!-- ================= 1. DASHBOARD ================= -->
+      <section id="screen-dashboard" class="app-screen active">
+        <!-- Overdue Debts Alert Banner (Smart Assistant Alert) -->
+        <div id="dash-overdue-alert-container"></div>
+
+        <!-- Main Stats Summary Cards -->
+        <div class="stats-grid">
+          <div class="stat-card debt-border">
+            <span class="stat-label">إجمالي الديون</span>
+            <span class="stat-value" id="dash-total-debts">0.00 ر.ي</span>
+            <span class="stat-sub">مجموع المبالغ المقيدة</span>
+          </div>
+          <div class="stat-card payment-border">
+            <span class="stat-label">إجمالي المدفوعات</span>
+            <span class="stat-value" id="dash-total-payments">0.00 ر.ي</span>
+            <span class="stat-sub">المبالغ المحصلة</span>
+          </div>
+          <div class="stat-card balance-border">
+            <span class="stat-label">الرصيد المتبقي</span>
+            <span class="stat-value" id="dash-total-balance">0.00 ر.ي</span>
+            <span class="stat-sub">صافي المستحقات</span>
+          </div>
+        </div>
+
+        <!-- Mini Metrics -->
+        <div class="mini-stats-grid">
+          <div class="mini-stat">
+            <div class="mini-stat-title">عدد العملاء</div>
+            <div class="mini-stat-num" id="dash-customers-count">0</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-title">عملاء مدينون</div>
+            <div class="mini-stat-num text-danger" style="color:var(--color-debt);" id="dash-debtors-count">0</div>
+          </div>
+          <div class="mini-stat">
+            <div class="mini-stat-title">عملاء مسددون</div>
+            <div class="mini-stat-num text-success" style="color:var(--color-payment);" id="dash-settled-count">0</div>
+          </div>
+        </div>
+
+        <!-- Quick Actions Grid -->
+        <div class="quick-actions-grid no-print">
+          <div class="action-btn" onclick="App.openAddCustomerModal()">
+            <div class="action-icon blue">👤</div>
+            <span>إضافة عميل</span>
+          </div>
+          <div class="action-btn" onclick="App.openRecordDebtModal()">
+            <div class="action-icon red">📉</div>
+            <span>تسجيل دين</span>
+          </div>
+          <div class="action-btn" onclick="App.openRecordPaymentModal()">
+            <div class="action-icon green">📈</div>
+            <span>تسجيل دفعة</span>
+          </div>
+          <div class="action-btn" onclick="App.openAddRemittanceModal()">
+            <div class="action-icon cyan">🏢</div>
+            <span>تسجيل حوالة</span>
+          </div>
+          <div class="action-btn" onclick="App.navigateTo('sms_management')">
+            <div class="action-icon purple">💬</div>
+            <span>إدارة SMS</span>
+          </div>
+          <div class="action-btn" onclick="App.navigateTo('reports')">
+            <div class="action-icon yellow">📊</div>
+            <span>التقارير</span>
+          </div>
+        </div>
+
+        <!-- Recent Transactions Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>💳</span> أحدث العمليات المالية
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="App.navigateTo('transactions')">عرض الكل</button>
+          </div>
+          <div id="dash-recent-txs" class="tx-list"></div>
+        </div>
+
+        <!-- Recent Inward Remittances Card -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <span>📨</span> أحدث الحوالات الواردة
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="App.navigateTo('remittances')">إدارة الحوالات</button>
+          </div>
+          <div id="dash-recent-remittances" class="tx-list"></div>
+        </div>
+      </section>
+
+      <!-- ================= 2. CUSTOMERS ================= -->
+      <section id="screen-customers" class="app-screen">
+        <div class="filter-bar no-print">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="customers-search-input" class="form-control" placeholder="بحث بالاسم أو برقم الهاتف...">
+          </div>
+          <select id="customers-filter-select" class="select-filter">
+            <option value="all">كافة الحالات</option>
+            <option value="debtors">المدينون فقط</option>
+            <option value="settled">المسددون بالكامل</option>
+            <option value="archived">المؤرشفون</option>
+          </select>
+          <select id="customers-category-select" class="select-filter">
+            <option value="all">كافة التصنيفات</option>
+            <option value="عميل عادي">عميل عادي</option>
+            <option value="عميل VIP">عميل VIP 👑</option>
+            <option value="عميل جديد">عميل جديد 🆕</option>
+            <option value="عميل متعثر">عميل متعثر ⚠️</option>
+            <option value="تاجر جملة">تاجر جملة 🏢</option>
+            <option value="عميل تجزئة">عميل تجزئة 🛒</option>
+          </select>
+          <select id="customers-sort-select" class="select-filter">
+            <option value="balance_desc">الأعلى رصيداً</option>
+            <option value="balance_asc">الأقل رصيداً</option>
+            <option value="name_asc">الاسم (أ - ي)</option>
+            <option value="last_tx">آخر عملية</option>
+          </select>
+          <button class="btn btn-primary" onclick="App.openAddCustomerModal()">+ عميل جديد</button>
+        </div>
+
+        <div id="customers-list-container"></div>
+      </section>
+
+      <!-- ================= 3. CUSTOMER DETAIL & STATEMENT ================= -->
+      <section id="screen-customer_detail" class="app-screen">
+        <div style="margin-bottom: 12px;" class="no-print">
+          <button class="btn btn-outline btn-sm" onclick="App.navigateTo('customers')">⬅️ العودة لقائمة العملاء</button>
+        </div>
+
+        <!-- Customer Summary Header Card -->
+        <div class="card">
+          <div class="customer-card-header" style="border-bottom: 1px solid var(--color-divider); padding-bottom: 12px; margin-bottom: 12px;">
+            <div>
+              <h2 id="detail-customer-name" style="font-size: 20px; font-weight: 800; color: var(--color-primary-dark); margin-bottom: 4px;">-</h2>
+              <div style="font-size: 14px; color: var(--color-text-muted);">
+                📞 <span id="detail-customer-phone" style="direction: ltr; display: inline-block;">-</span>
+              </div>
+              <div id="detail-customer-notes" style="font-size: 12px; color: #64748B; margin-top: 4px;">-</div>
+            </div>
+            <div style="text-align: left;">
+              <div style="font-size: 12px; color: var(--color-text-muted); font-weight: 600;">الرصيد النهائي المستحق</div>
+              <div id="detail-balance" class="amount" style="font-size: 22px; font-weight: 900; color: var(--color-debt);">-</div>
+            </div>
+          </div>
+
+          <div class="customer-stats-row" style="margin-bottom: 14px;">
+            <div class="item">
+              <span class="lbl">إجمالي الديون:</span>
+              <span class="val" id="detail-total-debts" style="color:var(--color-debt);">-</span>
+            </div>
+            <div class="item">
+              <span class="lbl">إجمالي المسدد:</span>
+              <span class="val" id="detail-total-payments" style="color:var(--color-payment);">-</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;" class="no-print">
+            <button id="btn-cust-add-debt" class="btn btn-danger btn-sm">+ تسجيل دين</button>
+            <button id="btn-cust-add-payment" class="btn btn-success btn-sm">+ تسجيل دفعة</button>
+            <button id="btn-cust-sms" class="btn btn-primary btn-sm">💬 إرسال SMS</button>
+            <button id="btn-cust-statement" class="btn btn-outline btn-sm">🖨️ طباعة كشف الحساب</button>
+            <button id="btn-cust-edit" class="btn btn-outline btn-sm">✏️ تعديل البيانات</button>
+            <button id="btn-cust-archive" class="btn btn-outline btn-sm">📦 أرشفة</button>
+            <button id="btn-cust-delete" class="btn btn-outline btn-sm" style="color: var(--color-debt);">🗑️ حذف</button>
+          </div>
+        </div>
+
+        <!-- Chronological Account Statement Table -->
+        <div class="statement-sheet">
+          <div class="statement-header">
+            <div>
+              <div class="statement-title">كشف حساب العميل التفصيلي</div>
+              <div class="statement-meta">سجل تاريخي محاسبي لكافة حركات الديون والمدفوعات بترتيب زمني</div>
+            </div>
+            <div class="no-print">
+              <button class="btn btn-primary btn-sm" onclick="window.print()">طباعة الكشف 🖨️</button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="app-table">
+              <thead>
+                <tr>
+                  <th>التاريخ</th>
+                  <th>نوع العملية</th>
+                  <th>دين (مدين)</th>
+                  <th>دفعة (دائن)</th>
+                  <th>الرصيد بعد العملية</th>
+                  <th>البيان والملاحظات</th>
+                </tr>
+              </thead>
+              <tbody id="detail-tx-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 4. TRANSACTIONS ================= -->
+      <section id="screen-transactions" class="app-screen">
+        <div class="filter-bar no-print">
+          <select id="tx-filter-type" class="select-filter">
+            <option value="all">كافة العمليات</option>
+            <option value="debt">ديون فقط</option>
+            <option value="payment">مدفوعات فقط</option>
+            <option value="opening">قيود افتتاحية</option>
+          </select>
+          <button class="btn btn-danger btn-sm" onclick="App.openRecordDebtModal()">+ تسجيل دين</button>
+          <button class="btn btn-success btn-sm" onclick="App.openRecordPaymentModal()">+ تسجيل دفعة</button>
+        </div>
+        <div id="tx-list-container" class="tx-list"></div>
+      </section>
+
+      <!-- ================= 5. INWARD REMITTANCES ================= -->
+      <section id="screen-remittances" class="app-screen">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;" class="no-print">
+          <h2 style="font-size: 18px; font-weight: 700; color: var(--color-primary-dark);">إدارة الحوالات الواردة</h2>
+          <button class="btn btn-primary" onclick="App.openAddRemittanceModal()">+ تسجيل حوالة جديدة</button>
+        </div>
+        <div id="remittances-list-container"></div>
+      </section>
+
+      <!-- ================= 6. SMS MANAGEMENT ================= -->
+      <section id="screen-sms_management" class="app-screen">
+        <div class="card no-print" style="margin-bottom: 14px;">
+          <div class="card-header">
+            <div class="card-title">💬 تذكير العملاء بالرسائل النصية SMS</div>
+          </div>
+          <p style="font-size: 13px; color: var(--color-text-muted); line-height: 1.5; margin-bottom: 10px;">
+            حدد عميلاً أو عدة عملاء مدينين لتجهيز رسائل المطالبة المالية تلقائياً بناءً على بيانات الأرصدة الحقيقية.
+          </p>
+        </div>
+        <div id="sms-debtors-list-container"></div>
+      </section>
+
+      <!-- ================= 7. SMS TEMPLATES ================= -->
+      <section id="screen-sms_templates" class="app-screen">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;" class="no-print">
+          <h2 style="font-size: 18px; font-weight: 700; color: var(--color-primary-dark);">قوالب الرسائل النصية</h2>
+          <button class="btn btn-primary" onclick="App.openAddTemplateModal()">+ إضافة قالب جديد</button>
+        </div>
+        <div id="sms-templates-container"></div>
+      </section>
+
+      <!-- ================= 8. SMS LOGS ================= -->
+      <section id="screen-sms_logs" class="app-screen">
+        <div style="margin-bottom: 14px;" class="no-print">
+          <h2 style="font-size: 18px; font-weight: 700; color: var(--color-primary-dark);">سجل الرسائل النصية المجهزة</h2>
+        </div>
+        <div id="sms-logs-container"></div>
+      </section>
+
+      <!-- ================= 9. REPORTS ================= -->
+      <section id="screen-reports" class="app-screen">
+        <div class="filter-bar no-print" style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+          <select id="report-type-select" class="select-filter">
+            <option value="all_balances">📊 تقرير الأرصدة المتبقية</option>
+            <option value="debtors">🔴 تقرير العملاء المدينين</option>
+            <option value="settled">🟢 تقرير العملاء المسددين</option>
+            <option value="transactions">💳 تقرير العمليات المالية</option>
+            <option value="remittances">📨 تقرير الحوالات الواردة</option>
+          </select>
+          <select id="report-period-select" class="select-filter">
+            <option value="all">كافة الفترات</option>
+            <option value="today">اليوم</option>
+            <option value="week">هذا الأسبوع</option>
+            <option value="month">هذا الشهر</option>
+            <option value="year">هذا العام</option>
+            <option value="custom">📅 فترة مخصصة (تحديد التواريخ)</option>
+          </select>
+
+          <!-- Date Range Picker Controls (Start & End Dates) -->
+          <div id="report-date-range-container" class="report-date-picker-box" style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; background: #fff; padding: 4px 10px; border-radius: var(--radius-sm); border: 1px solid var(--color-border);">
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <label for="report-start-date" style="font-size: 12px; font-weight: 600; color: var(--color-text-main); white-space: nowrap;">من تاريخ:</label>
+              <input type="date" id="report-start-date" class="form-control" style="font-size: 12px; padding: 4px 8px; height: 34px;" title="تاريخ بداية الفترة">
+            </div>
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <label for="report-end-date" style="font-size: 12px; font-weight: 600; color: var(--color-text-main); white-space: nowrap;">إلى تاريخ:</label>
+              <input type="date" id="report-end-date" class="form-control" style="font-size: 12px; padding: 4px 8px; height: 34px;" title="تاريخ نهاية الفترة">
+            </div>
+            <button class="btn btn-outline btn-sm" id="btn-apply-report-dates" onclick="App.applyReportCustomDates()" title="تطبيق التصفية بالتاريخ" style="height: 34px; padding: 0 10px; font-size: 12px;">تطبيق 🔍</button>
+            <button class="btn btn-outline btn-sm" id="btn-reset-report-dates" onclick="App.resetReportDates()" title="إعادة تعيين الفترة" style="height: 34px; padding: 0 8px; font-size: 12px;">↺</button>
+          </div>
+
+          <div style="display: flex; gap: 6px; margin-right: auto;">
+            <button class="btn btn-outline" onclick="App.exportCurrentReportCsv()">تصدير CSV 📥</button>
+            <button class="btn btn-primary" onclick="window.print()">طباعة 🖨️</button>
+          </div>
+        </div>
+
+        <div id="report-output-container"></div>
+      </section>
+
+      <!-- ================= 10. BACKUP & RESTORE ================= -->
+      <section id="screen-backup_restore" class="app-screen">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">💾 تصدير واستعادة النسخ الاحتياطية</div>
+          </div>
+          <p style="font-size: 13px; color: var(--color-text-main); line-height: 1.6; margin-bottom: 16px;">
+            يتم تخزين بياناتك محلياً على جهازك لضمان السرية التامة. احرص على أخذ نسخة احتياطية دورية لحفظ ملفاتك من الضياع عند حذف بيانات المتصفح أو تغيير الهاتف.
+          </p>
+          
+          <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="background: var(--color-bg); padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--color-border);">
+              <h4 style="font-size: 14px; margin-bottom: 6px; color: var(--color-primary-dark);">1. تصدير نسخة احتياطية كاملة (JSON)</h4>
+              <p style="font-size: 12px; color: var(--color-text-muted); margin-bottom: 10px;">
+                ملف مشفر ببنية قياسية يحتوي على جميع العملاء والديون والمدفوعات والحوالات والقوالب.
+              </p>
+              <button class="btn btn-primary" onclick="App.exportFullBackup()">تصدير نسخة احتياطية الآن 💾</button>
+            </div>
+
+            <div style="background: var(--color-bg); padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--color-border);">
+              <h4 style="font-size: 14px; margin-bottom: 6px; color: var(--color-primary-dark);">2. استعادة نسخة احتياطية</h4>
+              <p style="font-size: 12px; color: var(--color-text-muted); margin-bottom: 10px;">
+                يقوم النظام بالتحقق التلقائي من سلامة الملف، وتطبيق نسخة أمان مؤقتة قبل الاستعادة لحماية بياناتك من أي تلف.
+              </p>
+              <button class="btn btn-outline" onclick="App.triggerRestoreFilePicker()">اختيار ملف نسخة احتياطية لاستعادتها 📂</button>
+              <input type="file" id="restore-file-input" accept=".json" style="display:none;" onchange="App.handleRestoreFileSelect(this)">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 11. UNIVERSAL IMPORTER (EXCEL, DB, PDF) ================= -->
+      <section id="screen-import_csv" class="app-screen">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📥 استيراد بيانات العملاء من Excel وقواعد البيانات (DB) وكشوف PDF</div>
+          </div>
+          <p style="font-size: 13px; color: var(--color-text-main); line-height: 1.6; margin-bottom: 12px;">
+            استيراد مباشر من تطبيقات المحاسبة (<strong>المحاسب الذكي برو، دفتر الحسابات برو، الدفتر</strong>)، أو من ملفات Excel وقواعد البيانات وكشوف الحسابات البنكية.
+          </p>
+
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;">
+            <span class="badge" style="background: #E0F2FE; color: #0284C7; font-size: 12px; padding: 4px 8px;">📊 جداول Excel (.xlsx, .xls, .csv)</span>
+            <span class="badge" style="background: #EDE9FE; color: #7C3AED; font-size: 12px; padding: 4px 8px;">🗄️ قواعد بيانات (.db, .sqlite, .sql, .json)</span>
+            <span class="badge" style="background: #FEF3C7; color: #D97706; font-size: 12px; padding: 4px 8px;">📄 كشوف حساب PDF (.pdf)</span>
+          </div>
+
+          <div style="background: #F8FAFC; border: 1px solid var(--color-border); padding: 12px 14px; border-radius: 8px; font-size: 12px; color: #334155; margin-bottom: 16px;">
+            <strong>ضوابط الاستيراد المحاسبي الآمن:</strong>
+            <ul style="margin: 6px 16px 0 0; line-height: 1.6;">
+              <li>يقوم النظام بإنشاء <strong>قيود افتتاحية موثقة</strong> برصيد كل عميل تلقائياً لحفظ التاريخ المالي.</li>
+              <li>فحص مسبق لمنع التكرار مع إمكانية دمج الأرصدة أو تخطي الحسابات المكررة.</li>
+              <li>يمكنك مراجعة قائمة الحسابات المستخرجة وتحديد ما ترغب باستيراده قبل التأكيد.</li>
+            </ul>
+          </div>
+
+          <!-- Import Options -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 12px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">العملة الافتراضية للحسابات المستوردة</label>
+              <select id="import-default-currency" class="form-control"></select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">التعامل مع العملاء المكررين</label>
+              <select id="import-duplicate-handling" class="form-control">
+                <option value="skip">تخطي المكرر وعدم إعادة إضافته (موصى به)</option>
+                <option value="merge">دمج الرصيد مع العميل المسجل حالياً</option>
+                <option value="create_new">إنشاء كحساب جديد منفصل</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 14px;">
+            <label style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer; color: var(--color-primary-dark); background: #EFF6FF; padding: 8px 12px; border-radius: 6px; border: 1px solid #BFDBFE;">
+              <input type="checkbox" id="import-detailed-transactions" checked>
+              <span>🔄 ترحيل الحركات والعمليات التفصيلية بالكامل (تواريخ وسندات وملاحظات الحركات) إذا كانت متوفرة</span>
+            </label>
+          </div>
+
+          <!-- Market DB Highlighted Card -->
+          <div style="background: linear-gradient(135deg, #103B59 0%, #087FA8 100%); color: #fff; padding: 14px 16px; border-radius: 12px; margin-bottom: 14px; box-shadow: 0 4px 12px rgba(8, 127, 168, 0.25);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+              <div>
+                <div style="font-weight: 700; font-size: 14px; margin-bottom: 4px;">🗄️ استيراد ومعالجة قاعدة بيانات السوق (Market DB SQLite)</div>
+                <div style="font-size: 12px; opacity: 0.92; line-height: 1.5;">
+                  دعم متكامل لملفات SQLite (.db, .sqlite, .sql) مثل <strong>٢٠٢٦١٠٢٠٢١١٠٠٣-market(2).db</strong> (188 عميل • 1,327 حركة • 3 عملات • موردين وعملاء) مع تطبيق معادلة كشف الرصيد بدقة 100%.
+                </div>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-sm" style="background: #00D5D9; color: #103B59; font-weight: 700; border: none; padding: 8px 14px;" onclick="App.loadMarketDbDemo()">
+                  🧪 فحص وتجربة نموذج Market DB (188 عميل / 1327 حركة)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="App.triggerUniversalFilePicker()">اختر ملف الاستيراد الشامل (Excel / DB / PDF) 📁</button>
+            <input type="file" id="universal-file-input" accept=".xlsx,.xls,.csv,.tsv,.db,.sqlite,.sql,.json,.pdf" style="display:none;" onchange="App.handleUniversalFileSelect(this)">
+            <button class="btn btn-outline" onclick="App.triggerCsvFilePicker()">استيراد ملف CSV مخصص (مع دعم UTF-8 العربي) 📄</button>
+            <input type="file" id="csv-file-input" accept=".csv,.txt" style="display:none;" onchange="App.handleCsvFileSelect(this)">
+          </div>
+        </div>
+
+        <!-- Import Preview Container -->
+        <div id="universal-import-preview-card" class="card" style="display: none; margin-top: 14px;">
+          <div class="card-header">
+            <div id="import-preview-title" class="card-title">معاينة الحسابات المستخرجة</div>
+            <span id="import-preview-badge" class="badge badge-info">0 حساب</span>
+          </div>
+
+          <div id="import-preview-stats" style="margin-bottom: 12px;"></div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; cursor: pointer;">
+              <input type="checkbox" id="import-select-all" checked onchange="App.toggleSelectAllImport(this)">
+              تحديد / إلغاء تحديد كافة الحسابات
+            </label>
+            <span id="import-selected-count" style="font-size: 12px; color: var(--color-text-muted);">0 محدد</span>
+          </div>
+
+          <div style="overflow-x: auto; max-height: 420px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: 8px; margin-bottom: 14px;">
+            <table class="data-table" style="font-size: 12px;">
+              <thead>
+                <tr>
+                  <th style="width: 40px; text-align: center;">اختيار</th>
+                  <th>اسم العميل</th>
+                  <th>التصنيف</th>
+                  <th>الهاتف</th>
+                  <th>الحركات</th>
+                  <th>إجمالي الديون</th>
+                  <th>إجمالي المدفوعات</th>
+                  <th>الرصيد المستورد</th>
+                  <th>العملة</th>
+                  <th>الحالة</th>
+                </tr>
+              </thead>
+              <tbody id="import-preview-table-body"></tbody>
+            </table>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button class="btn btn-outline" onclick="App.cancelImportPreview()">إلغاء المعاينة</button>
+            <button class="btn btn-primary" id="btn-confirm-import" onclick="App.confirmUniversalImport()">تأكيد واستيراد الحسابات المحددة 🚀</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 12. ASSISTANT ================= -->
+      <section id="screen-assistant" class="app-screen">
+        <div id="assistant-insights-container"></div>
+      </section>
+
+      <!-- ================= 13. SETTINGS ================= -->
+      <section id="screen-settings" class="app-screen">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">⚙️ إعدادات التطبيق والمظهر</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">اسم التطبيق</label>
+            <input type="text" id="setting-app-title" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">العملة الافتراضية</label>
+            <select id="setting-currency" class="form-control">
+              <option value="ر.ي">ريال يمني (ر.ي)</option>
+              <option value="ر.س">ريال سعودي (ر.س)</option>
+              <option value="$">دولار أمريكي ($)</option>
+              <option value="ج.م">جنيه مصري (ج.م)</option>
+              <option value="د.إ">درهم إماراتي (د.إ)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">المظهر (الوضع الفاتح / الداكن)</label>
+            <select id="setting-theme" class="form-control">
+              <option value="light">الوضع الفاتح الافتراضي</option>
+              <option value="dark">الوضع الداكن (Dark Mode)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">لون الواجهة الرئيسي</label>
+            <select id="setting-accent" class="form-control">
+              <option value="blue">الأزرق المالي الافتراضي (#087FA8)</option>
+              <option value="emerald">الأخضر الزمردي (#10B981)</option>
+              <option value="purple">الأرجواني الملكي (#8B5CF6)</option>
+              <option value="navy">الكحلي الداكن (#1E3A8A)</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-top: 18px;">
+            <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+              <input type="checkbox" id="setting-overpayment" checked>
+              منع تسجيل دفعة أكبر من الرصيد المستحق (حماية محاسبية لمنع الأرصدة السالبة)
+            </label>
+          </div>
+
+          <div class="form-group" style="margin-top: 14px; border-top: 1px solid var(--color-border); padding-top: 14px;">
+            <label class="form-label">الأيقونة الافتراضية للعملاء والتخصيص البصري</label>
+            <input type="hidden" id="setting-default-icon" value="👤">
+            <div id="settings-default-icon-picker" class="icon-picker-grid"></div>
+            <div class="form-hint">اختر الأيقونة الافتراضية. يمكنك أيضاً تعيين أيقونة مخصصة لكل عميل مستقل من شاشة إضافة/تعديل العميل.</div>
+          </div>
+
+          <button class="btn btn-primary" onclick="App.saveSettingsSubmit()" style="margin-top: 10px;">حفظ الإعدادات الأساسية</button>
+        </div>
+
+        <!-- Custom Currencies Management Card -->
+        <div class="card" style="margin-top: 14px;">
+          <div class="card-header">
+            <div class="card-title">💱 إدارة العملات المخصصة</div>
+            <span class="badge badge-info" id="settings-currencies-count">0 عملة</span>
+          </div>
+          <p style="font-size: 13px; color: var(--color-text-main); line-height: 1.6; margin-bottom: 12px;">
+            أضف أي عملات جديدة مخصصة لنشاطك التجاري بجانب العملات الافتراضية. يمكنك تخصيص عملة مستقلة لكل عميل من شاشة تعديل العميل.
+          </p>
+
+          <div id="settings-currencies-chips" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;"></div>
+
+          <div style="background: #F8FAFC; border: 1px solid var(--color-border); border-radius: 8px; padding: 14px;">
+            <h4 style="font-size: 14px; margin-bottom: 10px; color: var(--color-primary-dark);">إضافة عملة جديدة مخصصة:</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 10px;">
+              <div>
+                <label class="form-label">اسم العملة <span class="required">*</span></label>
+                <input type="text" id="custom-curr-name" class="form-control" placeholder="مثال: ريال عماني، يورو، دينار بحريني">
+              </div>
+              <div>
+                <label class="form-label">رمز العملة (الاختصار) <span class="required">*</span></label>
+                <input type="text" id="custom-curr-symbol" class="form-control" placeholder="مثال: ر.ع، €، د.ب">
+              </div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="App.addCustomCurrencySubmit()">+ إضافة العملة إلى النظام</button>
+          </div>
+        </div>
+
+        <!-- Local Calendar Notification Scheduler Card -->
+        <div class="card" style="margin-top: 14px;">
+          <div class="card-header">
+            <div class="card-title">🔔 التنبيهات المحلية وجدولة تقويم الهاتف</div>
+            <span class="badge" style="background: #D1FAE5; color: #065F46;">يعمل والتطبيق مغلق</span>
+          </div>
+          <p style="font-size: 13px; color: var(--color-text-main); line-height: 1.6; margin-bottom: 14px;">
+            يقوم نظام التنبيهات المحلي (Notification Scheduler) بربط مواعيد استحقاق الديون بتقويم هاتفك مباشرة (Google Calendar / Samsung Calendar) لإطلاق منبهات وتنبيهات صوتية بمواعيد السداد حتى لو كان التطبيق مغلقاً.
+          </p>
+
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn btn-primary btn-sm" onclick="App.scheduleAllUpcomingDebtsPrompt()">
+              📅 جدولة كافة الديون المستحقة في تقويم الهاتف
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="App.requestBrowserNotificationPrompt()">
+              🔔 تفعيل إشعارات المتصفح
+            </button>
+          </div>
+        </div>
+
+        <!-- Factory Reset Section -->
+        <div class="card" style="border-color: #FECACA; background: #FFF5F5; margin-top: 14px;">
+          <h4 style="color: var(--color-debt); font-size: 15px; margin-bottom: 6px;">منطقة الخطر: إعادة ضبط المصنع</h4>
+          <p style="font-size: 12px; color: #7F1D1D; margin-bottom: 12px;">
+            سيؤدي هذا الخيار إلى حذف كافة السجلات والعملاء والعمليات نهائياً. تأكد من أخذ نسخة احتياطية قبل المتابعة.
+          </p>
+          <button class="btn btn-danger btn-sm" onclick="App.resetAllDataPrompt()">مسح كافة بيانات التطبيق</button>
+        </div>
+      </section>
+
+      <!-- ================= 14. ABOUT & TEST RUNNER ================= -->
+      <section id="screen-about" class="app-screen">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🧪 فحص النظام واختبارات المحاسبة والتخزين</div>
+          </div>
+          <p style="font-size: 13px; color: var(--color-text-main); line-height: 1.6; margin-bottom: 14px;">
+            نفّذ الفحص التلقائي الشامل للتأكد من سلامة المعادلات الحسابية، وعمليات الديون، والمدفوعات، والحوالات، ومنع التكرار، والنسخ الاحتياطي في بيئة معزولة آمنة.
+          </p>
+          <button class="btn btn-primary" onclick="App.runAutomatedTestSuite()">تشغيل حزمة الاختبارات المحاسبية الآن 🚀</button>
+        </div>
+        <div id="test-results-container"></div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Navigation Bar (Fixed for Mobile) -->
+    <nav class="bottom-nav no-print">
+      <button class="nav-item active" data-screen="dashboard" onclick="App.navigateTo('dashboard')">
+        <span class="nav-icon">🏠</span>
+        <span>الرئيسية</span>
+      </button>
+      <button class="nav-item" data-screen="customers" onclick="App.navigateTo('customers')">
+        <span class="nav-icon">👥</span>
+        <span>العملاء</span>
+      </button>
+      <button class="nav-item" data-screen="transactions" onclick="App.navigateTo('transactions')">
+        <span class="nav-icon">💳</span>
+        <span>العمليات</span>
+      </button>
+      <button class="nav-item" data-screen="remittances" onclick="App.navigateTo('remittances')">
+        <span class="nav-icon">📨</span>
+        <span>الحوالات</span>
+      </button>
+      <button class="nav-item" data-screen="sms_management" onclick="App.navigateTo('sms_management')">
+        <span class="nav-icon">💬</span>
+        <span>SMS</span>
+      </button>
+      <button class="nav-item" data-screen="settings" onclick="App.navigateTo('settings')">
+        <span class="nav-icon">⚙️</span>
+        <span>الإعدادات</span>
+      </button>
+    </nav>
+
+    <!-- Floating Action Button (+ Customer) -->
+    <button class="fab no-print" onclick="App.openAddCustomerModal()" title="إضافة عميل سريع">+</button>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="no-print"></div>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- 1. Customer Modal (Add/Edit) -->
+    <div id="modal-customer" class="modal-overlay">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3 id="modal-customer-title" class="modal-title">إضافة عميل جديد</h3>
+          <button class="modal-close" onclick="App.closeModal('modal-customer')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="cust-form-id">
+          <div class="form-group">
+            <label class="form-label">اسم العميل <span class="required">*</span></label>
+            <input type="text" id="cust-form-name" class="form-control" placeholder="أدخل اسم العميل ثلاثياً..." required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">رقم الهاتف</label>
+            <input type="tel" id="cust-form-phone" class="form-control ltr" placeholder="مثال: 777123456" oninput="App.checkPhoneDuplicateInput(this)">
+            <div id="phone-duplicate-warning" class="form-error" style="color: #D97706; font-weight: 600;"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">تصنيف العميل <span class="required">*</span></label>
+            <select id="cust-form-category" class="form-control">
+              <option value="عميل عادي">عميل عادي</option>
+              <option value="عميل VIP">عميل VIP (مميز) 👑</option>
+              <option value="عميل جديد">عميل جديد 🆕</option>
+              <option value="عميل متعثر">عميل متعثر (بحاجة لمتابعة) ⚠️</option>
+              <option value="تاجر جملة">تاجر جملة 🏢</option>
+              <option value="عميل تجزئة">عميل تجزئة 🛒</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">عملة الحساب الخاصة بالعميل</label>
+            <select id="cust-form-currency" class="form-control"></select>
+            <div class="form-hint">اختر عملة محددة لهذا العميل، أو دعها افتراضية لتطابق عملة النظام الرئيسية.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">أيقونة العميل للتمييز البصري</label>
+            <input type="hidden" id="cust-form-icon" value="👤">
+            <div id="cust-icon-picker-grid" class="icon-picker-grid"></div>
+            <div class="form-hint">اختر أيقونة لتمييز العميل بصرياً في القوائم ولوحة التحكم وكشوف الحسابات.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">ملاحظات وبيان</label>
+            <textarea id="cust-form-notes" class="form-control" placeholder="العنوان، النشاط، أو أي تفاصيل إضافية..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="App.closeModal('modal-customer')">إلغاء</button>
+          <button class="btn btn-primary" onclick="App.saveCustomerSubmit()">حفظ العميل</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Transaction Modal (Debt/Payment) -->
+    <div id="modal-transaction" class="modal-overlay">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3 id="modal-tx-title" class="modal-title">تسجيل عملية مالية</h3>
+          <button class="modal-close" onclick="App.closeModal('modal-transaction')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="tx-form-type" value="debt">
+          <div class="form-group">
+            <label class="form-label">العميل <span class="required">*</span></label>
+            <select id="tx-form-customer" class="form-control" required></select>
+          </div>
+          <div class="form-group" id="tx-form-linked-debt-group" style="display: none;">
+            <label class="form-label">ربط الدفعة بدين محدد (دفعة جزئية) <span class="badge" style="background:#E0F2FE; color:#0284C7; font-size:11px;">جديد</span></label>
+            <select id="tx-form-linked-debt" class="form-control" onchange="App.handleLinkedDebtChange(this.value)">
+              <option value="">-- دفعة عامة على إجمالي الحساب --</option>
+            </select>
+            <div id="tx-form-linked-debt-hint" class="form-hint" style="margin-top: 5px; font-weight: 600; color: var(--color-primary);"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">المبلغ المالي <span class="required">*</span> <span id="tx-form-currency-badge" class="badge" style="background:#E0F2FE; color:#0284C7; font-size:11px;"></span></label>
+            <input type="number" id="tx-form-amount" class="form-control ltr" placeholder="0.00" min="0.01" step="any" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">التاريخ <span class="required">*</span></label>
+            <input type="date" id="tx-form-date" class="form-control" required>
+          </div>
+          <div class="form-group" id="tx-form-duedate-group">
+            <label class="form-label">تاريخ استحقاق الدين (اختياري)</label>
+            <input type="date" id="tx-form-duedate" class="form-control">
+            <div class="form-hint">حدد موعد السداد لاكتشاف الديون المتأخرة وتنبيهك تلقائياً في لوحة التحكم.</div>
+            <div style="margin-top: 8px;">
+              <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer; font-size: 13px; color: var(--color-primary-dark);">
+                <input type="checkbox" id="tx-form-schedule-calendar" checked>
+                🔔 جدولة تذكير في تقويم الهاتف بموعد الاستحقاق (يعمل حتى لو كان التطبيق مغلقاً)
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">رقم الفاتورة / السند المرجعي (اختياري)</label>
+            <input type="text" id="tx-form-ref" class="form-control" placeholder="مثال: فاتورة رقم 1042 أو سند قبض 89">
+          </div>
+          <div class="form-group">
+            <label class="form-label">البيان والملاحظات</label>
+            <textarea id="tx-form-notes" class="form-control" placeholder="تفاصيل المشتريات أو طريقة الدفع..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="App.closeModal('modal-transaction')">إلغاء</button>
+          <button id="btn-save-tx" class="btn btn-primary" onclick="App.saveTransactionSubmit()">حفظ العملية</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Remittance Modal -->
+    <div id="modal-remittance" class="modal-overlay">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3 class="modal-title">تسجيل حوالة واردة جديدة</h3>
+          <button class="modal-close" onclick="App.closeModal('modal-remittance')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">شركة التحويل <span class="required">*</span></label>
+            <select id="remit-form-company" class="form-control" required></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">الرقم المرجعي للحوالة (رقم الحوالة) <span class="required">*</span></label>
+            <input type="text" id="remit-form-ref" class="form-control ltr" placeholder="مثال: ت/8000011 أو 948271" required>
+            <div class="form-hint">يستخدم هذا الرقم لمنع تكرار تسجيل الحوالة ذاتها لنفس الشركة.</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">مبلغ الحوالة <span class="required">*</span></label>
+            <input type="number" id="remit-form-amount" class="form-control ltr" placeholder="0.00" min="0.01" step="any" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">اسم المرسل</label>
+            <input type="text" id="remit-form-sender" class="form-control" placeholder="اسم الشخص المرسل للحوالة...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">هاتف المرسل (إن وجد)</label>
+            <input type="tel" id="remit-form-phone" class="form-control ltr" placeholder="777...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">ربط بالعميل (اختياري الآن)</label>
+            <select id="remit-form-customer" class="form-control"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">تاريخ الحوالة</label>
+            <input type="date" id="remit-form-date" class="form-control">
+          </div>
+          <div class="form-group">
+            <label class="form-label">ملاحظات</label>
+            <input type="text" id="remit-form-notes" class="form-control" placeholder="أي تفاصيل خاصة بالحوالة...">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="App.closeModal('modal-remittance')">إلغاء</button>
+          <button id="btn-save-remit" class="btn btn-primary" onclick="App.saveRemittanceSubmit()">حفظ الحوالة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Link Remittance to Customer Modal -->
+    <div id="modal-link-remittance" class="modal-overlay">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3 class="modal-title">ربط الحوالة بعميل</h3>
+          <button class="modal-close" onclick="App.closeModal('modal-link-remittance')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">اختر العميل المستحق للحوالة <span class="required">*</span></label>
+            <select id="link-remit-customer" class="form-control" required></select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="App.closeModal('modal-link-remittance')">إلغاء</button>
+          <button class="btn btn-primary" onclick="App.saveLinkRemittanceSubmit()">ربط الحوالة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Send SMS Modal -->
+    <div id="modal-send-sms" class="modal-overlay">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3 class="modal-title">معاينة وإرسال رسالة SMS</h3>
+          <button class="modal-close" onclick="App.closeModal('modal-send-sms')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div style="background: var(--color-bg); padding: 10px 14px; border-radius: var(--radius-sm); margin-bottom: 12px; font-size: 13px;">
+            <div><strong>العميل:</strong> <span id="sms-modal-customer-name">-</span></div>
+            <div><strong>الهاتف:</strong> <span id="sms-modal-phone" style="direction: ltr; display: inline-block;">-</span></div>
+            <div><strong>الرصيد المستحق:</strong> <span id="sms-modal-balance" style="font-weight:700; color:var(--color-debt);">-</span></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">اختيار القالب</label>
+            <select id="sms-modal-tpl-select" class="form-control"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">نص الرسالة المجهزة</label>
+            <textarea id="sms-modal-text" class="form-control" rows="5"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="App.closeModal('modal-send-sms')">إلغاء</button>
+          <button class="btn btn-primary" onclick="App.dispatchSmsSubmit()">فتح تطبيق الرسائل للإرسال 💬</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Template Modal -->
+    <div id="modal-template" class="modal-overlay">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3 class="modal-title">قالب رسالة نصية</h3>
+          <button class="modal-close" onclick="App.closeModal('modal-template')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="tpl-form-id">
+          <div class="form-group">
+            <label class="form-label">اسم القالب <span class="required">*</span></label>
+            <input type="text" id="tpl-form-name" class="form-control" placeholder="مثال: تذكير السداد الشهري" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">نص القالب <span class="required">*</span></label>
+            <textarea id="tpl-form-content" class="form-control" rows="5" placeholder="أدخل نص الرسالة مع المتغيرات..."></textarea>
+            <div class="form-hint" style="margin-top: 6px;">
+              المتغيرات المدعومة: {اسم_العميل} ، {الرصيد} ، {إجمالي_الديون} ، {إجمالي_المدفوعات} ، {التاريخ}
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="App.closeModal('modal-template')">إلغاء</button>
+          <button class="btn btn-primary" onclick="App.saveTemplateSubmit()">حفظ القالب</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. CSV Preview Modal -->
+    <div id="modal-csv-preview" class="modal-overlay">
+      <div class="modal-dialog" style="max-width: 520px;">
+        <div class="modal-header">
+          <h3 class="modal-title">معاينة استيراد ملف CSV (مع دعم UTF-8 العربي)</h3>
+          <button class="modal-close" onclick="App.closeModal('modal-csv-preview')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="card" style="margin-bottom: 12px; background: var(--color-bg);">
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 13px;">
+              <div>إجمالي الصفوف: <strong id="csv-preview-total">0</strong></div>
+              <div>السجلات الصالحة: <strong id="csv-preview-valid" style="color: #16A34A;">0</strong></div>
+              <div>السجلات غير الصالحة: <strong id="csv-preview-invalid" style="color: #DC2626;">0</strong></div>
+              <div>العملاء المحتمل تكرارهم: <strong id="csv-preview-dup" style="color: #D97706;">0</strong></div>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 12px;">
+            <label class="form-label" style="font-size: 12px; font-weight: 600;">التعامل مع العملاء المحتمل تكرارهم:</label>
+            <select id="csv-import-duplicate-handling" class="form-control" style="font-size: 12px;">
+              <option value="skip">تخطي المكرر وعدم إعادة إضافته (موصى به)</option>
+              <option value="merge">دمج الرصيد مع العميل المسجل حالياً</option>
+              <option value="create_new">إنشاء كحساب جديد منفصل</option>
+            </select>
+          </div>
+
+          <div id="csv-preview-samples-box" style="margin-bottom: 12px; max-height: 150px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: var(--radius-sm); font-size: 12px; display: none;">
+            <table class="data-table" style="width: 100%; margin: 0; font-size: 11px;">
+              <thead>
+                <tr style="background: var(--color-bg);">
+                  <th style="padding: 6px;">الاسم</th>
+                  <th style="padding: 6px;">الهاتف</th>
+                  <th style="padding: 6px;">الرصيد</th>
+                  <th style="padding: 6px;">الحالة</th>
+                </tr>
+              </thead>
+              <tbody id="csv-preview-samples-body"></tbody>
+            </table>
+          </div>
+
+          <p style="font-size: 13px; color: var(--color-text-main); line-height: 1.5;">
+            سيتم استيراد العملاء الصالحين مع إنشاء قيد افتتاحي موثق لكل عميل لديه رصيد سابق. هل ترغب في إتمام عملية الاستيراد؟
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="App.closeModal('modal-csv-preview')">إلغاء</button>
+          <button class="btn btn-primary" onclick="App.confirmCsvImportSubmit()">تأكيد الاستيراد</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Restore Backup Preview Modal -->
+    <div id="modal-restore-preview" class="modal-overlay">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3 class="modal-title">معاينة استعادة النسخة الاحتياطية</h3>
+          <button class="modal-close" onclick="App.closeModal('modal-restore-preview')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="card" style="background: var(--color-bg); margin-bottom: 14px;">
+            <div style="font-size: 13px; line-height: 1.8;">
+              <div>إصدار التنسيق: <strong id="restore-preview-version">-</strong></div>
+              <div>تاريخ التصدير: <strong id="restore-preview-date">-</strong></div>
+              <div>عدد العملاء: <strong id="restore-preview-cust">0</strong></div>
+              <div>عدد العمليات: <strong id="restore-preview-tx">0</strong></div>
+              <div>عدد الحوالات: <strong id="restore-preview-remit">0</strong></div>
+            </div>
+          </div>
+          <p style="font-size: 13px; color: var(--color-text-main); line-height: 1.5; margin-bottom: 10px;">
+            اختر وضع الاستعادة المطلوب:
+          </p>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button class="btn btn-danger btn-sm" onclick="App.confirmRestoreSubmit('full')">
+              1. استعادة كاملة (استبدال البيانات بعد نسخة أمان)
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="App.confirmRestoreSubmit('merge')">
+              2. استيراد ودمج (إضافة البيانات الجديدة مع منع التكرار)
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="App.closeModal('modal-restore-preview')">إلغاء</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- JavaScript Modules in Dependency Order -->
+  <script src="js/storage.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/customers.js"></script>
+  <script src="js/transactions.js"></script>
+  <script src="js/remittances.js"></script>
+  <script src="js/sms.js"></script>
+  <script src="js/reports.js"></script>
+  <script src="js/backup.js"></script>
+  <script src="js/import-csv.js"></script>
+  <script src="js/universal-importer.js"></script>
+  <script src="js/notification-scheduler.js"></script>
+  <script src="js/assistant.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/tests.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

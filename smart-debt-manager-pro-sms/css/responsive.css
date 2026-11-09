@@ -1,0 +1,114 @@
+/* ===================================================================
+   Responsive & Print Styles - Smart Debt Manager Pro SMS
+   =================================================================== */
+
+@media (max-width: 600px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  
+  .stat-card {
+    padding: 10px 4px;
+  }
+  
+  .stat-label {
+    font-size: 11px;
+  }
+  
+  .stat-value {
+    font-size: 15px;
+  }
+  
+  .stat-sub {
+    font-size: 9px;
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .action-btn {
+    padding: 10px 4px;
+    font-size: 11px;
+  }
+
+  .action-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 16px;
+  }
+
+  .statement-customer-info {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 380px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mini-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .stats-grid {
+    gap: 16px;
+  }
+  
+  .stat-card {
+    padding: 20px 16px;
+  }
+
+  .stat-value {
+    font-size: 24px;
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Print Stylesheet for Invoices, Statements, and Reports */
+@media print {
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    font-size: 12pt;
+  }
+
+  .app-header,
+  .bottom-nav,
+  .sub-nav-tabs,
+  .fab,
+  .filter-bar,
+  .modal-overlay,
+  .no-print,
+  #toast-container {
+    display: none !important;
+  }
+
+  .main-content {
+    padding: 0 !important;
+  }
+
+  .card, .statement-sheet {
+    box-shadow: none !important;
+    border: 1px solid #CCCCCC !important;
+    margin: 0 !important;
+    padding: 12pt !important;
+  }
+
+  .app-table th {
+    background: #EEEEEE !important;
+    color: #000000 !important;
+  }
+}

@@ -1,0 +1,119 @@
+/* ===================================================================
+   Themes & Dark Mode - Smart Debt Manager Pro SMS
+   =================================================================== */
+
+/* Dark Theme */
+body.theme-dark {
+  --color-bg: #0F172A;
+  --color-card-bg: #1E293B;
+  --color-text-main: #F8FAFC;
+  --color-text-muted: #94A3B8;
+  --color-border: #334155;
+  --color-divider: #1E293B;
+  
+  --color-debt-bg: rgba(201, 54, 54, 0.2);
+  --color-payment-bg: rgba(24, 135, 84, 0.2);
+  --color-balance-bg: rgba(245, 158, 11, 0.2);
+  --color-info-bg: rgba(2, 132, 199, 0.2);
+  
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+body.theme-dark .app-header {
+  background: linear-gradient(135deg, #0B192C 0%, #103B59 100%);
+  border-bottom: 1px solid #334155;
+}
+
+body.theme-dark .bottom-nav {
+  background: #1E293B;
+  border-top: 1px solid #334155;
+}
+
+body.theme-dark .sub-nav-tabs {
+  background: #1E293B;
+  border-bottom: 1px solid #334155;
+}
+
+body.theme-dark .tab-chip {
+  background: #0F172A;
+  border-color: #334155;
+  color: #94A3B8;
+}
+
+body.theme-dark .tab-chip.active {
+  background: var(--color-primary);
+  color: #FFFFFF;
+}
+
+body.theme-dark .card,
+body.theme-dark .stat-card,
+body.theme-dark .mini-stat,
+body.theme-dark .customer-card,
+body.theme-dark .tx-item,
+body.theme-dark .action-btn,
+body.theme-dark .modal-dialog,
+body.theme-dark .statement-sheet,
+body.theme-dark .empty-state,
+body.theme-dark .insight-item {
+  background: #1E293B;
+  border-color: #334155;
+  color: #F8FAFC;
+}
+
+body.theme-dark .stat-card.balance-border .stat-value {
+  color: #38BDF8;
+}
+
+body.theme-dark .card-title,
+body.theme-dark .customer-name,
+body.theme-dark .empty-title,
+body.theme-dark .statement-title,
+body.theme-dark .insight-content h4 {
+  color: #F8FAFC;
+}
+
+body.theme-dark .form-control,
+body.theme-dark .select-filter {
+  background: #0F172A;
+  border-color: #334155;
+  color: #F8FAFC;
+}
+
+body.theme-dark .customer-stats-row,
+body.theme-dark .statement-customer-info,
+body.theme-dark .modal-footer {
+  background: #0F172A;
+  border-color: #334155;
+}
+
+body.theme-dark .app-table th {
+  background: #0F172A;
+  color: #94A3B8;
+  border-bottom-color: #334155;
+}
+
+body.theme-dark .app-table td {
+  border-bottom-color: #334155;
+}
+
+body.theme-dark .app-table tbody tr:hover {
+  background: #182234;
+}
+
+/* Color Accent Variants (Set via Settings) */
+body.accent-emerald {
+  --color-primary: #10B981;
+  --color-primary-dark: #064E3B;
+}
+
+body.accent-purple {
+  --color-primary: #8B5CF6;
+  --color-primary-dark: #4C1D95;
+}
+
+body.accent-navy {
+  --color-primary: #1E3A8A;
+  --color-primary-dark: #0F172A;
+}
